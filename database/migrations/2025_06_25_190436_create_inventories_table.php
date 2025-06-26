@@ -21,6 +21,9 @@ return new class extends Migration
             $table->foreignId('warehouse_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->index('product_id');
+            $table->index('warehouse_id');
         });
     }
 
@@ -29,6 +32,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('inventories');
+        Schema::table('inventories', function (Blueprint $table) {
+            $table->dropIndex(['warehouse_id', 'product_id']);
+            $table->drop();
+        });
     }
 };

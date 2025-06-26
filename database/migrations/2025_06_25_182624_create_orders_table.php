@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->uuid('order_id')->primary();
-            $table->date('order_date');
+            $table->date('order_date')->index();
             $table->integer('order_quantity');
             $table->date('order_expected_date');
             $table->foreignId('provider_id')->constrained()->cascadeOnDelete();
@@ -21,6 +21,10 @@ return new class extends Migration
             $table->foreignId('warehouse_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->index('provider_id');
+            $table->index('product_id');
+            $table->index('warehouse_id');
         });
     }
 
@@ -29,6 +33,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('orders');
+        Schema::table('orders', function (Blueprint $table) {
+            $table->dropIndex(['provider_id', 'product_id', 'warehouse_id', 'order_date']);
+            $table->drop();
+        });
     }
 };

@@ -16,6 +16,9 @@ return new class extends Migration
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();
             $table->primary(['product_id', 'category_id']);
             $table->softDeletes();
+
+            $table->index('product_id');
+            $table->index('category_id');
         });
     }
 
@@ -24,6 +27,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_category');
+        Schema::table('product_category', function (Blueprint $table) {
+            $table->dropIndex(['category_id', 'product_id']);
+            $table->drop();
+        });
     }
 };

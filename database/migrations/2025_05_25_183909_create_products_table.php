@@ -25,6 +25,8 @@ return new class extends Migration
             $table->timestamps();
 
             $table->softDeletes();
+
+            $table->index(['product_name', 'product_code', 'product_bar_code'], 'idx_product');
         });
     }
 
@@ -33,6 +35,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::table('products', function(Blueprint $table){
+            $table->dropIndex('idx_product');
+            $table->drop();
+        });
     }
 };

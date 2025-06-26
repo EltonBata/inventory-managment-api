@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('warehouses', function (Blueprint $table) {
             $table->uuid('warehouse_id')->primary();
-            $table->string('warehouse_name');
+            $table->string('warehouse_name')->index();
             $table->string('warehouse_location_name');
             $table->text('warehouse_address');
             $table->boolean('warehouse_is_refrigereted');
@@ -27,6 +27,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('warehouses');
+        Schema::table('warehouses', function(Blueprint $table){
+            $table->dropIndex(['warehouse_name']);
+            $table->drop();
+        });
     }
 };
