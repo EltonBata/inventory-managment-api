@@ -23,4 +23,8 @@ class Providers extends Model
         return $this->hasMany(Products::class);
     }
 
+    public function user()
+    {
+        return $this->hasOne(User::class);
+    }
 }

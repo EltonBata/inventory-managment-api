@@ -18,9 +18,13 @@ class Customers extends Model
         'customer_address'
     ];
 
-    public function delivery(){
+    public function delivery()
+    {
         return $this->hasMany(Deliveries::class);
     }
 
-   
+    public function user()
+    {
+        return $this->hasOne(User::class);
+    }
 }
