@@ -11,8 +11,7 @@ class Roles extends Model
     use SoftDeletes, HasUuids;
 
     protected $keyType = 'string';
+    protected $primaryKey = 'role_id';
 
     protected $fillable = ['role_name'];
-
-    
 }

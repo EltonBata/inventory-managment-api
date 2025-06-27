@@ -11,6 +11,7 @@ class Warehouses extends Model
     use SoftDeletes, HasUuids;
 
     protected $keyType = 'string';
+    protected $primaryKey = 'warehouse_id';
 
     protected $fillable = [
         'warehouse_name',

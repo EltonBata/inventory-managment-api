@@ -11,6 +11,7 @@ class Orders extends Model
     use SoftDeletes, HasUuids;
 
     protected $keyType = 'string';
+    protected $primaryKey = 'order_id';
 
     protected $fillable = [
         'order_date',

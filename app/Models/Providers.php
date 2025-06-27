@@ -11,6 +11,7 @@ class Providers extends Model
     use SoftDeletes, HasUuids;
 
     protected $keyType = 'string';
+    protected $primaryKey = 'provider_id';
 
     protected $fillable = [
         'provider_name',

@@ -11,6 +11,7 @@ class Transfers extends Model
     use SoftDeletes, HasUuids;
 
     protected $keyType = 'string';
+    protected $primaryKey = 'transfer_id';
 
     protected $fillable = [
         'transfer_quantity',

@@ -11,6 +11,7 @@ class Customers extends Model
     use SoftDeletes, HasUuids;
 
     protected $keyType = 'string';
+    protected $primaryKey = 'customer_id';
 
     protected $fillable = [
         'customer_name',

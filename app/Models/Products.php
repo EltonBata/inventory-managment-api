@@ -11,6 +11,7 @@ class Products extends Model
     use SoftDeletes, HasUuids;
 
     protected $keyType = 'string';
+    protected $primaryKey = 'product_id';
 
     protected $fillable = [
         'product_code',
