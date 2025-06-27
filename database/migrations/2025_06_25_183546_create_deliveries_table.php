@@ -16,9 +16,9 @@ return new class extends Migration
             $table->date('delivery_date')->index();
             $table->integer('delivery_quantity');
             $table->date('delivery_expected_date');
-            $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('warehouse_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('customer_id')->constrained('customers', 'customer_id')->cascadeOnDelete();
+            $table->foreignId('product_id')->constrained('products', 'product_id')->cascadeOnDelete();
+            $table->foreignId('warehouse_id')->constrained('warehouses', 'warehouse_id')->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();
 

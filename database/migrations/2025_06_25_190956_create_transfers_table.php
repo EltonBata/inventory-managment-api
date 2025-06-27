@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer('transfer_quantity');
             $table->date('transfer_sent_date')->index();
             $table->date('transfer_received_date')->index();
-            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('product_id')->constrained('products', 'product_id')->cascadeOnDelete();
             $table->foreignId('source_warehouse_id')->constrained('warehouses', 'wherehouse_id')->cascadeOnDelete();
             $table->foreignId('destiny_warehouse_id')->constrained('warehouses', 'wherehouse_id')->cascadeOnDelete();
 

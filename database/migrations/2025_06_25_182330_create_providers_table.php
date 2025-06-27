@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('provider_id')->primary();
             $table->string('provider_name');
             $table->text('provider_address');
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->constrained('users', 'user_id');
             $table->timestamps();
             $table->softDeletes();
         });

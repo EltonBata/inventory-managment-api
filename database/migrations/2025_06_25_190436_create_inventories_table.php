@@ -17,8 +17,8 @@ return new class extends Migration
             $table->integer('inventory_maximum_stock_level');
             $table->integer('inventory_minimum_stock_level');
             $table->integer('inventory_reorder_point');
-            $table->foreignId('product_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('warehouse_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('product_id')->constrained('products', 'product_id')->cascadeOnDelete();
+            $table->foreignId('warehouse_id')->constrained('warehouses', 'warehouse_id')->cascadeOnDelete();
             $table->timestamps();
             $table->softDeletes();
 
