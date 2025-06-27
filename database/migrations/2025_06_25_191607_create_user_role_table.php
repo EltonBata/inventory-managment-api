@@ -18,8 +18,6 @@ return new class extends Migration
             $table->boolean('status')->default('true');
             $table->timestamps();
 
-            $table->index('user_id');
-            $table->index('role_id');
         });
     }
 
@@ -29,7 +27,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('user_role', function (Blueprint $table) {
-            $table->dropIndex(['user_id', 'role_id']);
             $table->drop();
         });
     }
