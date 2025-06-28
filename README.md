@@ -1,24 +1,26 @@
-# Inventory Mandagment API
+# Inventory Management API
 
-> Uma pequena api para gestao de inventario desenvolvido com base no framework Laravel com a simples finalidade de aprendizado continuo.
+> A small API for inventory management developed using the Laravel framework, created for the simple purpose of continuous learning.
 
-
-## 🧰 Tecnologias Utilizadas
+## 🧰 Technologies Used
 
 - PHP (Laravel)
 - SQLite
 
+## 📦 Installation
 
-## 📦 Instalação
-
-Instruções para instalar o projeto localmente:
+Instructions to install the project locally:
 
 ```bash
-# Clone o repositório
+# Clone the repository
 git clone https://github.com/EltonBata/inventory-managment-api.git
 
-# Acesse o diretório
+# Access the directory
 cd inventory-managment-api
 
-# Inicie o projeto
+# Run the migrations
+php artisan migrate --seed
+
+# Start the project
 php artisan serve
+```
