@@ -25,8 +25,7 @@ class AppServiceProvider extends ServiceProvider
                 ->mixedCase() // letras maiúsculas e minúsculas
                 ->letters()   // letras obrigatórias
                 ->numbers()   // números obrigatórios
-                ->symbols()   // símbolos obrigatórios
-                ->uncompromised(); // verifica se a senha está em vazamentos públicos
+                ->symbols();   // símbolos obrigatórios
         });
     }
 }
