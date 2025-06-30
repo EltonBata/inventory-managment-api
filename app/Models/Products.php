@@ -27,22 +27,22 @@ class Products extends Model
 
     public function categories()
     {
-        return $this->belongsToMany(Categories::class, 'product_category');
+        return $this->belongsToMany(Categories::class, 'product_category', 'product_id', 'category_id');
     }
 
     public function orders()
     {
-        return $this->hasMany(Orders::class);
+        return $this->hasMany(Orders::class, 'product_id');
     }
 
     public function deliveries()
     {
-        return $this->hasMany(Deliveries::class);
+        return $this->hasMany(Deliveries::class, 'delivery_id');
     }
 
     public function warehouses()
     {
-        $this->belongsToMany(Warehouses::class)
+        $this->belongsToMany(Warehouses::class, 'product_id', 'warehouse_id')
             ->as('inventory')
             ->withPivot([
                 'inventory_quantity_available',

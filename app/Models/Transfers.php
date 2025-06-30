@@ -21,7 +21,7 @@ class Transfers extends Model
 
     public function product()
     {
-        return $this->belongsTo(Products::class)->withDefault();
+        return $this->belongsTo(Products::class, 'product_id')->withDefault();
     }
 
     public function source_warehouse()

@@ -10,6 +10,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -54,6 +55,16 @@ class User extends Authenticatable
 
     public function roles()
     {
-        return $this->belongsToMany(Roles::class);
+        return $this->belongsToMany(Roles::class, 'user_role', 'user_id', 'role_id');
+    }
+
+    public function customer()
+    {
+        return $this->hasOne(Customers::class, 'user_id');
+    }
+
+    public function provider()
+    {
+        return $this->hasOne(Providers::class, 'user_id');
     }
 }

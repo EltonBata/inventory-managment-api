@@ -22,7 +22,7 @@ class Warehouses extends Model
 
     public function products()
     {
-        $this->belongsToMany(Products::class)
+        $this->belongsToMany(Products::class, 'warehouse_id', 'product_id')
             ->as('inventory')
             ->withPivot([
                 'inventory_quantity_available',
@@ -34,7 +34,7 @@ class Warehouses extends Model
 
     public function orders()
     {
-        return $this->hasMany(Products::class);
+        return $this->hasMany(Products::class, 'warehouse_id');
     }
 
   

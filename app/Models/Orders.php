@@ -20,14 +20,14 @@ class Orders extends Model
     ];
 
     public function provider(){
-        return $this->belongsTo(Providers::class)->withDefault();
+        return $this->belongsTo(Providers::class, 'provider_id')->withDefault();
     }
 
     public function product(){
-        return $this->belongsTo(Products::class)->withDefault();
+        return $this->belongsTo(Products::class, 'product_id')->withDefault();
     }
 
     public function warehouse(){
-        return $this->belongsTo(Warehouses::class)->withDefault();
+        return $this->belongsTo(Warehouses::class, 'warehouse_id')->withDefault();
     }
 }

@@ -22,16 +22,16 @@ class Deliveries extends Model
 
     public function customer()
     {
-        return $this->belongsTo(Customers::class)->withDefault();
+        return $this->belongsTo(Customers::class, 'customer_id')->withDefault();
     }
 
     public function warehouse()
     {
-        return $this->belongsTo(Warehouses::class)->withDefault();
+        return $this->belongsTo(Warehouses::class, 'warehouse_id')->withDefault();
     }
 
     public function product()
     {
-        return $this->belongsTo(Products::class)->withDefault();
+        return $this->belongsTo(Products::class, 'product_id')->withDefault();
     }
 }

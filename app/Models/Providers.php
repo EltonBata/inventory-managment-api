@@ -20,11 +20,11 @@ class Providers extends Model
 
     public function orders()
     {
-        return $this->hasMany(Products::class);
+        return $this->hasMany(Products::class, 'provider_id');
     }
 
     public function user()
     {
-        return $this->hasOne(User::class);
+        return $this->hasOne(User::class, 'user_id');
     }
 }
