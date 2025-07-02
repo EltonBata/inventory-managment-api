@@ -16,7 +16,7 @@ class DetectLangMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        App::setLocale(request('lang', config('app.locale')));
+        App::setLocale($request->header('Accept-Language', config('app.locale')));
 
         return $next($request);
     }
