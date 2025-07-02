@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Enums\RoleEnum;
 use App\Models\Roles;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -100,6 +102,12 @@ class AuthController extends Controller
             //create roles
             $user->roles()->attach($request->roles);
 
+
+            //send verification email
+            event(new Registered($user));
+
+            Log::channel('daily')->info('Email-verification sent', ['user' => $user->user_id]);
+
             DB::commit();
 
             Log::channel('daily')->info('User created', ['user' => $user->user_id]);
@@ -128,5 +136,62 @@ class AuthController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function verify_email(EmailVerificationRequest $request)
+    {
+        try {
+
+            $request->fulfill();
+
+            Log::channel('daily')->info('Email verified', ['user' => $request->user()->user_id]);
+
+            return response()->json([
+                'message' => __('message.email_verified')
+            ], 200);
+        } catch (\Exception $e) {
+
+            Log::channel('daily')->error('Failed to verify email', ['user' => $request->user()->user_id]);
+
+            return response()->json([
+                'message' => __('message.email_verify_failed'),
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function resend_verification_email(Request $request)
+    {
+        try {
+            $request->user()->sendEmailVerificationNotification();
+
+            Log::channel('daily')->info('Email verification resent', ['user' => $request->user()->user_id]);
+
+            return response()->json([
+                'message' => __('message.email_verification_resent')
+            ], 200);
+        } catch (\Exception $e) {
+
+            Log::channel('daily')->error('Failed to resend verification email', ['user' => $request->user()->user_id]);
+
+            return response()->json([
+                'message' => __('message.email_verification_send_failed'),
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function logout(Request $request)
+    {
+
+        $request->user()->currentAccessToken()->delete();
+
+        Log::channel('daily')->info('User logged out', ['user' => $request->user()->user_id]);
+
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'message' => __('message.loggedout')
+        ], 200);
     }
 }
