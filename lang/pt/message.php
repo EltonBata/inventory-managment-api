@@ -12,11 +12,4 @@ return [
     'email_verification_resent' => 'Link de verificação reenviado!',
     'email_verification_send_failed' => 'Falha ao reenviar o e-mail de verificação!',
 
-
-    //email verification messages
-    'subject' => 'Verifique o endereço de e-mail',
-    'greet' => 'Olá :username,',
-    'line1' => 'Por favor, clique no botão abaixo para verificar seu endereço de e-mail.',
-    'action' => 'Verificar endereço de e-mail',
-    'line2' => 'Se você não criou uma conta, nenhuma ação adicional é necessária.'
 ];

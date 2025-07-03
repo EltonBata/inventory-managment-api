@@ -11,12 +11,4 @@ return [
     'email_verification_resent' => 'Verification link resent!',
     'email_verification_send_failed' => 'Failed to resend verification email!',
 
-
-
-    //email verification messages
-    'subject' => 'Verify Email Address',
-    'greet' => 'Hi :username,',
-    'line1' => 'Please click the button below to verify your email address.',
-    'action' => 'Verify Email Address',
-    'line2' => 'If you did not create an account, no further action is required.'
 ];

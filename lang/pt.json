@@ -1,3 +1,17 @@
 {
-    "User": "Usuario"
+    "User": "Usuario",
+
+    "Hello": "Olá",
+
+    "Thank you for registering. Please click the button below to verify your email address and activate your account.": "Obrigado por se registrar. Por favor, clique no botão abaixo para verificar seu endereço de e-mail e ativar sua conta.",
+
+    "Verify Email Address": "Verificar E-mail",
+
+    "If you did not create this account, no further action is required.": "Se você não criou esta conta, nenhuma ação é necessária.",
+
+    "All rights reserved.": "Todos os direitos reservados.",
+
+    "If you're having trouble clicking the \"Verify Email Address\" button, copy and paste the URL below into your web browser: ": "Se você estiver com problemas para clicar no botão \"Verificar E-mail\", copie e cole o URL abaixo em seu navegador: ",
+
+    "Confirm your email address": "Confirme seu endereço de e-mail"
 }
