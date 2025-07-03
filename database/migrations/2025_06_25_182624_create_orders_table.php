@@ -16,9 +16,16 @@ return new class extends Migration
             $table->date('order_date')->index();
             $table->integer('order_quantity');
             $table->date('order_expected_date');
-            $table->foreignId('provider_id')->constrained('providers', 'provider_id')->cascadeOnDelete();
-            $table->foreignId('product_id')->constrained('products', 'product_id')->cascadeOnDelete();
-            $table->foreignId('warehouse_id')->constrained('warehouses', 'warehouse_id')->cascadeOnDelete();
+
+            $table->uuid('provider_id');
+            $table->foreign('provider_id')->references('provider_id')->on('providers')->cascadeOnDelete();
+
+            $table->uuid('product_id');
+            $table->foreign('product_id')->references('product_id')->on('products')->cascadeOnDelete();
+
+            $table->uuid('warehouse_id');
+            $table->foreign('warehouse_id')->references('warehouse_id')->on('warehouses')->cascadeOnDelete();
+            
             $table->timestamps();
             $table->softDeletes();
 

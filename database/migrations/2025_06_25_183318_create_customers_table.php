@@ -15,7 +15,10 @@ return new class extends Migration
             $table->uuid('customer_id')->primary();
             $table->string('customer_name');
             $table->text('customer_address');
-            $table->foreignId('user_id')->constrained('users', 'user_id');
+            $table->uuid('user_id');
+
+            $table->foreign('user_id')->references('user_id')->on('users')->cascadeOnDelete();
+            
             $table->timestamps();
             $table->softDeletes();
         });
