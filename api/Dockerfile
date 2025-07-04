@@ -38,9 +38,6 @@ COPY . .
 #install app dependencies
 RUN composer install --no-interaction --no-progress --prefer-dist
 
-#modify permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 #expose port
 EXPOSE 80
