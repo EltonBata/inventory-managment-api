@@ -2,14 +2,20 @@
 
 @import "tailwindcss";
 
-@theme{
-    --font-sans: "Roboto", 'sans';
+@theme {
+  --font-sans: "Roboto", "sans";
 }
 
 @plugin "daisyui" {
   themes: nord --default;
 }
 
-#root{
-    position: relative;
+#root {
+  position: relative;
+}
+
+.input,
+.select,
+.textarea {
+  outline: none !important;
 }
