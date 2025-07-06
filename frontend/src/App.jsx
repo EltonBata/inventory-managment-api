@@ -1,14 +1,7 @@
-import Login from "./auth/Login";
-import Footer from "./components/Footer";
+import RoutesList from "./routes/Routes";
 
 const App = () => {
-  return (
-    <>
-      <Login />
-
-      <Footer />
-    </>
-  );
+  return <RoutesList />;
 };
 
 export default App;
