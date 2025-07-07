@@ -3,7 +3,7 @@ import { FaEnvelope, FaKey } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import Card from "./components/Card.jsx";
 
-const LoginPage = () => {
+function LoginPage() {
   const [isBtnDisabled, disableBtn] = useState(false);
 
   let btn_classes = "";
@@ -26,7 +26,9 @@ const LoginPage = () => {
             <FaEnvelope className="text-gray-400" />
             <input type="email" placeholder="mail@site.com" required />
           </label>
-          <div className="validator-hint hidden">Enter a valid email address</div>
+          <div className="validator-hint hidden">
+            Enter a valid email address
+          </div>
         </fieldset>
 
         <fieldset className="fieldset my-1.5">
@@ -78,6 +80,6 @@ const LoginPage = () => {
       </form>
     </Card>
   );
-};
+}
 
 export default LoginPage;

@@ -3,7 +3,7 @@ import { FaEnvelope, FaKey, FaUser } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import Card from "./components/Card.jsx";
 
-const RegisterPage = () => {
+function RegisterPage() {
   const [isBtnDisabled, disableBtn] = useState(false);
 
   let btn_classes = "";
@@ -131,6 +131,6 @@ const RegisterPage = () => {
       </form>
     </Card>
   );
-};
+}
 
 export default RegisterPage;

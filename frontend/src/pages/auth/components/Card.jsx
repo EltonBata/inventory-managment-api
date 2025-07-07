@@ -1,4 +1,4 @@
-const Card = ({ children, wd = 'w-full sm:w-2/3 md:w-3/5 lg:w-2/5' }) => {
+function Card({ children, wd = "w-full sm:w-2/3 md:w-3/5 lg:w-2/5" }) {
   return (
     <div className="w-dvw h-dvh flex items-center justify-center bg-linear-to-r from-slate-200 to-slate-500 p-3">
       <div className={`card ${wd} glass card-md shadow-md rounded-box border`}>
@@ -13,6 +13,6 @@ const Card = ({ children, wd = 'w-full sm:w-2/3 md:w-3/5 lg:w-2/5' }) => {
       </div>
     </div>
   );
-};
+}
 
 export default Card;

@@ -5,7 +5,7 @@ import RegisterPage from "../pages/auth/RegisterPage.jsx";
 import ErrorsLayout from "../pages/errors/ErrorsLayout.jsx";
 import NotFoundPage from "../pages/errors/NotFoundPage.jsx";
 
-const RoutesList = () => {
+function RoutesList() {
   return (
     <Routes>
       <Route path="/" element={<AuthLayout />}>
@@ -19,6 +19,6 @@ const RoutesList = () => {
       </Route>
     </Routes>
   );
-};
+}
 
 export default RoutesList;
