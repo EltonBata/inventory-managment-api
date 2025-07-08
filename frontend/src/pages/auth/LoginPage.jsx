@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import Card from "./components/Card.jsx";
 import { authenticate } from "../../services/auth.js";
 import { toast } from "react-toastify";
+import { useToken } from "../../contexts/AuthContext.jsx";
 
 function LoginPage() {
   const [isBtnDisabled, disableBtn] = useState(false);
@@ -13,6 +14,8 @@ function LoginPage() {
     email: "",
     password: "",
   });
+
+  const { setToken, setUser, user } = useToken();
 
   let btn_classes = "";
 
@@ -30,6 +33,9 @@ function LoginPage() {
     try {
       const res = await authenticate(credentials);
 
+      setToken(res.token);
+      setUser(JSON.parse(res.user));
+
       toast.update(toastId, {
         render: res.message,
         type: "success",
@@ -37,6 +43,8 @@ function LoginPage() {
         autoClose: 5000,
         hideProgressBar: false,
       });
+
+      
     } catch (error) {
       toast.update(toastId, {
         render: error?.message,
