@@ -36,7 +36,9 @@ class AuthController extends Controller
             Log::channel('daily')->info('User authenticated', ['user' => $user->user_id]);
 
             return response()->json([
-                'token' => $token
+                'message' => __('auth.authenticated'),
+                'token' => $token,
+                'user' => $user->load('roles:role_id,role_name')->toJson()
             ]);
         }
 
