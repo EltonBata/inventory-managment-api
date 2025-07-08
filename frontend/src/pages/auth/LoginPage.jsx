@@ -1,4 +1,5 @@
 import { useState } from "react";
+import useForm from "../../hooks/useForm.js";
 import { FaEnvelope, FaKey } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import Card from "./components/Card.jsx";
@@ -8,9 +9,10 @@ import { toast } from "react-toastify";
 function LoginPage() {
   const [isBtnDisabled, disableBtn] = useState(false);
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [inputError, setInputError] = useState({ email: "", password: "" });
+  const { values, handleChange, resetForm, errors, setErrors } = useForm({
+    email: "",
+    password: "",
+  });
 
   let btn_classes = "";
 
@@ -23,13 +25,13 @@ function LoginPage() {
 
     const toastId = toast.loading("Please wait...");
 
-    const creadentials = { email, password };
+    const credentials = { email: values.email, password: values.password };
 
     try {
-      const res = await authenticate(creadentials);
+      const res = await authenticate(credentials);
 
       toast.update(toastId, {
-        render: "Logged in successfully!",
+        render: res.message,
         type: "success",
         isLoading: false,
         autoClose: 5000,
@@ -45,7 +47,7 @@ function LoginPage() {
       });
 
       if (error.errors) {
-        setInputError({
+        setErrors({
           email: error.errors.email ?? "",
           password: error.errors.password ?? "",
         });
@@ -69,20 +71,18 @@ function LoginPage() {
             <FaEnvelope className="text-gray-400" />
             <input
               type="email"
-              className={`${inputError.email ? "border-error" : ""}`}
+              name="email"
+              className={`${errors.email ? "border-error" : ""}`}
               placeholder="mail@site.com"
               required
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                setInputError((prev) => ({ ...prev, email: "" }));
-              }}
+              defaultValue={values.email}
+              onChange={handleChange}
             />
           </label>
           <p className="validator-hint hidden">Enter a valid email address</p>
 
-          <p className={`text-error ${inputError.email ? "" : "hidden"}`}>
-            {inputError.email}
+          <p className={`text-error ${errors.email ? "" : "hidden"}`}>
+            {errors.email}
           </p>
         </fieldset>
 
@@ -95,17 +95,15 @@ function LoginPage() {
             <FaKey className="text-gray-400" />
             <input
               type="password"
-              className={`${inputError.password ? "border-error" : ""}`}
+              name="password"
+              className={`${errors.password ? "border-error" : ""}`}
               required
               placeholder="Password"
               minLength="8"
               pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
               title="Must be more than 8 characters, including a number, a lowercase letter, and an uppercase letter"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                setInputError((prev) => ({ ...prev, password: "" }));
-              }}
+              defaultValue={values.password}
+              onChange={handleChange}
             />
           </label>
           <p className="validator-hint hidden">
@@ -115,8 +113,8 @@ function LoginPage() {
             At least one lowercase letter <br />
             At least one uppercase letter
           </p>
-          <p className={`text-error ${inputError.password ? "" : "hidden"}`}>
-            {inputError.password}
+          <p className={`text-error ${errors.password ? "" : "hidden"}`}>
+            {errors.password}
           </p>
           <div className="text-right mt-1">
             <Link

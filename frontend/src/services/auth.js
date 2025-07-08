@@ -18,7 +18,10 @@ export const authenticate = async (credentials) => {
 
     return data;
   } catch (error) {
-    console.error("Request Error:", error);
+    if (error instanceof TypeError) {
+      throw new Error("Request error!");
+    }
+
     throw error;
   }
 };
