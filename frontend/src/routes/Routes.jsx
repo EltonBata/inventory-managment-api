@@ -6,7 +6,7 @@ import ErrorsLayout from "../pages/errors/ErrorsLayout.jsx";
 import NotFoundPage from "../pages/errors/NotFoundPage.jsx";
 import { useToken } from "../contexts/AuthContext.jsx";
 
-function AuthenticatedMiddleware({ children }) {
+function IsAuthenticated({ children }) {
   const { isAuthenticated } = useToken();
 
   if (!isAuthenticated) {
@@ -16,9 +16,9 @@ function AuthenticatedMiddleware({ children }) {
   return children;
 }
 
-function NotAuthenticatedMiddleware({ children }) {
+function IsNotAuthenticated({ children }) {
   const { isAuthenticated } = useToken();
- 
+
   if (isAuthenticated) {
     return <Navigate to="/home" />;
   }
@@ -32,9 +32,9 @@ function RoutesList() {
       <Route
         path="/"
         element={
-          <NotAuthenticatedMiddleware>
+          <IsNotAuthenticated>
             <AuthLayout />
-          </NotAuthenticatedMiddleware>
+          </IsNotAuthenticated>
         }
       >
         <Route index element={<LoginPage />} />
@@ -42,17 +42,17 @@ function RoutesList() {
         <Route
           path="/login"
           element={
-            <NotAuthenticatedMiddleware>
+            <IsNotAuthenticated>
               <Navigate to="/" />
-            </NotAuthenticatedMiddleware>
+            </IsNotAuthenticated>
           }
         />
         <Route
           path="/register"
           element={
-            <NotAuthenticatedMiddleware>
+            <IsNotAuthenticated>
               <RegisterPage />
-            </NotAuthenticatedMiddleware>
+            </IsNotAuthenticated>
           }
         />
       </Route>

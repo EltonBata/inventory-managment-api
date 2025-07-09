@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useForm from "../../hooks/useForm.js";
 import { FaEnvelope, FaKey } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import Card from "./components/Card.jsx";
 import { authenticate } from "../../services/auth.js";
 import { toast } from "react-toastify";
@@ -33,7 +33,12 @@ function LoginPage() {
     try {
       const res = await authenticate(credentials);
 
-      setToken(res.token);
+      setToken((prev) => ({
+        ...prev,
+        token: res.token,
+        token_expires_at: res.token_expires_at,
+      }));
+
       setUser(JSON.parse(res.user));
 
       toast.update(toastId, {
@@ -44,7 +49,7 @@ function LoginPage() {
         hideProgressBar: false,
       });
 
-      
+      return <Navigate to="/home" />;
     } catch (error) {
       toast.update(toastId, {
         render: error?.message,
