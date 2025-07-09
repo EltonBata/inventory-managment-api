@@ -31,13 +31,14 @@ class AuthController extends Controller
             $user = Auth::user();
 
             //generate token
-            $token = $user->createToken("{$user->username}-token")->plainTextToken;
+            $token = $user->createToken("{$user->username}-token", ['*'], now()->addMinutes(30));
 
             Log::channel('daily')->info('User authenticated', ['user' => $user->user_id]);
 
             return response()->json([
                 'message' => __('auth.authenticated'),
-                'token' => $token,
+                'token' => $token->plainTextToken,
+                'token_expires_at' => $token->accessToken->expires_at,
                 'user' => $user->load('roles:role_id,role_name')->toJson()
             ]);
         }
