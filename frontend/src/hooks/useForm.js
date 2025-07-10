@@ -5,9 +5,33 @@ export default function useForm(initialValues = {}) {
   const [errors, setErrors] = useState(initialValues);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
 
-    setValues((prev) => ({ ...prev, [name]: value }));
+    setValues((prev) => {
+      if (type === "checkbox") {
+        const currentArray = Array.isArray(prev[name]) ? prev[name] : [];
+
+        if (checked) {
+          // Adiciona o valor se ainda não estiver presente
+          return {
+            ...prev,
+            [name]: [...currentArray, value],
+          };
+        } else {
+          // Remove o valor se for desmarcado
+          return {
+            ...prev,
+            [name]: currentArray.filter((item) => item !== value),
+          };
+        }
+      }
+
+      // Para outros tipos de input
+      return {
+        ...prev,
+        [name]: value,
+      };
+    });
 
     resetError(name);
   };
