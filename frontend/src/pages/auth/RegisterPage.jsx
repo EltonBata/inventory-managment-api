@@ -10,6 +10,8 @@ import { Link } from "react-router-dom";
 import Card from "./components/Card.jsx";
 import useForm from "../../hooks/useForm.js";
 import { useEffect } from "react";
+import { toast } from "react-toastify";
+import { register } from "../../services/auth.js";
 
 function RegisterPage() {
   const [isBtnDisabled, disableBtn] = useState(false);
@@ -34,24 +36,76 @@ function RegisterPage() {
 
   //if roles change
   useEffect(() => {
-    
     const roles = values.roles;
 
     const roles_fields = document.querySelectorAll(".role_fields");
 
     roles_fields.forEach(function (element) {
       if (!element.classList.contains("hidden"))
-        element.classList.add("hidden");
+        element.querySelectorAll("input").forEach(function (input) {
+          input.disabled = true;
+        });
+      element.classList.add("hidden");
     });
 
     roles.forEach(function (name) {
-      document.querySelector(`#${name}_fields`).classList.remove("hidden");
+      const role = document.querySelector(`#${name}_fields`);
+
+      role.classList.remove("hidden");
+
+      role.querySelectorAll("input").forEach(function (input) {
+        input.disabled = false;
+      });
     });
   }, [JSON.stringify(values.roles)]);
 
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    disableBtn(true);
+
+    const toastId = toast.loading("loading...");
+
+    try {
+      const res = await register(values);
+
+      toast.update(toastId, {
+        render: res.message,
+        type: "success",
+        isLoading: false,
+        autoClose: 5000,
+        hideProgressBar: false,
+      });
+    } catch (error) {
+      toast.update(toastId, {
+        render: error.message,
+        type: "error",
+        isLoading: false,
+        autoClose: 5000,
+        hideProgressBar: false,
+      });
+
+      if (error.errors) {
+        setErrors({
+          username: error.errors.username ?? "",
+          email: error.errors.email ?? "",
+          password: error.errors.password ?? "",
+          roles: error.errors.roles ?? "",
+          customer_name: error.errors.customer_name ?? "",
+          customer_address: error.errors.customer_address ?? "",
+          provider_name: error.errors.provider_name ?? "",
+          provider_address: error.errors.provider_address ?? "",
+        });
+      }
+    } finally {
+      disableBtn(false);
+    }
+  };
+console.log(errors)
   return (
     <Card wd="w-full md:w-4/5 lg:w-3/5">
-      <form method="" action="" className="pb-5">
+      <form onSubmit={handleSubmit} className="pb-5">
         <h2 className="text-xl text-gray-600 text-center mb-4">Register</h2>
 
         <div className="grid grid-cols-2 gap-1.5">
@@ -66,6 +120,7 @@ function RegisterPage() {
                 <input
                   type="text"
                   name="username"
+                  className={`${errors.username ? "border-error" : ""}`}
                   placeholder="username"
                   onChange={handleChange}
                   required
@@ -79,6 +134,9 @@ function RegisterPage() {
                 Must be 3 to 30 characters
                 <br />
                 containing only letters, numbers or dash
+              </p>
+              <p className={`text-error ${errors.username ? "" : "hidden"} `}>
+                {errors.username}
               </p>
             </fieldset>
           </div>
@@ -94,6 +152,7 @@ function RegisterPage() {
                 <input
                   type="email"
                   name="email"
+                  className={`${errors.email ? "border-error" : ""}`}
                   placeholder="mail@site.com"
                   required
                   onChange={handleChange}
@@ -102,6 +161,9 @@ function RegisterPage() {
               <div className="validator-hint hidden">
                 Enter valid email address
               </div>
+              <p className={`text-error ${errors.email ? "" : "hidden"} `}>
+                {errors.email}
+              </p>
             </fieldset>
           </div>
 
@@ -116,6 +178,7 @@ function RegisterPage() {
                 <input
                   type="password"
                   name="password"
+                  className={`${errors.password ? "border-error" : ""}`}
                   onChange={handleChange}
                   required
                   placeholder="Password"
@@ -130,6 +193,9 @@ function RegisterPage() {
                 At least one number <br />
                 At least one lowercase letter <br />
                 At least one uppercase letter
+              </p>
+              <p className={`text-error ${errors.password ? "" : "hidden"} `}>
+                {errors.password}
               </p>
             </fieldset>
           </div>
@@ -153,13 +219,6 @@ function RegisterPage() {
                   title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
                 />
               </label>
-              <p className="validator-hint hidden">
-                Must be more than 8 characters, including
-                <br />
-                At least one number <br />
-                At least one lowercase letter <br />
-                At least one uppercase letter
-              </p>
             </fieldset>
           </div>
 
@@ -194,6 +253,10 @@ function RegisterPage() {
                   Customer
                 </label>
               </div>
+
+              <p className={`text-error ${errors.roles ? "" : "hidden"} `}>
+                {errors.roles}
+              </p>
             </fieldset>
           </div>
 
@@ -214,12 +277,20 @@ function RegisterPage() {
                     <FaAddressBook className="text-gray-400" />
                     <input
                       type="text"
+                      className={`${errors.cprovider_name ? "border-error" : ""}`}
                       onChange={handleChange}
                       placeholder="provider name"
                       name="provider_name"
                       required
                     />
                   </label>
+                  <p
+                    className={`text-error ${
+                      errors.provider_name ? "" : "hidden"
+                    } `}
+                  >
+                    {errors.provider_name}
+                  </p>
                 </fieldset>
 
                 <fieldset className="fieldset col-span-2 sm:col-span-1">
@@ -231,12 +302,21 @@ function RegisterPage() {
                     <FaAddressCard className="text-gray-400" />
                     <input
                       type="text"
+                      className={`${errors.provider_address ? "border-error" : ""}`}
                       onChange={handleChange}
                       placeholder="provider address"
                       required
                       name="provider_address"
                     />
                   </label>
+
+                  <p
+                    className={`text-error ${
+                      errors.provider_address ? "" : "hidden"
+                    } `}
+                  >
+                    {errors.provider_address}
+                  </p>
                 </fieldset>
               </div>
             </fieldset>
@@ -259,12 +339,20 @@ function RegisterPage() {
                     <FaAddressBook className="text-gray-400" />
                     <input
                       type="text"
+                      className={`${errors.customer_name ? "border-error" : ""}`}
                       onChange={handleChange}
                       placeholder="customer name"
                       name="customer_name"
                       required
                     />
                   </label>
+                  <p
+                    className={`text-error ${
+                      errors.customer_name ? "" : "hidden"
+                    } `}
+                  >
+                    {errors.customer_name}
+                  </p>
                 </fieldset>
 
                 <fieldset className="fieldset col-span-2 sm:col-span-1">
@@ -276,12 +364,21 @@ function RegisterPage() {
                     <FaAddressCard className="text-gray-400" />
                     <input
                       type="text"
+                      className={`${errors.customer_address ? "border-error" : ""}`}
                       onChange={handleChange}
                       placeholder="customer address"
                       required
                       name="customer_address"
                     />
                   </label>
+
+                  <p
+                    className={`text-error ${
+                      errors.customer_address ? "" : "hidden"
+                    } `}
+                  >
+                    {errors.customer_address}
+                  </p>
                 </fieldset>
               </div>
             </fieldset>
