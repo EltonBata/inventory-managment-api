@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Enums\RoleEnum;
 use App\Models\Roles;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
@@ -61,17 +63,15 @@ class AuthController extends Controller
                 'password' => ['required', Password::defaults(), 'confirmed'],
                 'username' => ['required', 'string', Rule::unique(User::class, 'username')],
                 'roles' => ['required', 'array'],
-                'roles.*' => ['uuid', Rule::exists(Roles::class, 'role_id')]
+                'roles.*' => ['string', Rule::exists(Roles::class, 'role_name')]
             ];
 
-            //get roles according to given ids
-            $roles = Roles::whereIn('role_id', $request->roles)->select('role_name')->get();
 
             //add more validations
-            foreach ($roles as $role) {
+            foreach ($request->roles as $role) {
 
                 //if user is customer add respective fields for validation
-                if ($role->role_name === RoleEnum::CUSTOMER->value) {
+                if ($role === RoleEnum::CUSTOMER->value) {
                     $fields = array_merge($fields, [
                         'customer_name' => ['required', 'string'],
                         'customer_address' => ['required', 'string'],
@@ -79,7 +79,7 @@ class AuthController extends Controller
                 }
 
                 //if user is provider add respective fields for validation
-                if ($role->role_name === RoleEnum::PROVIDER->value) {
+                if ($role === RoleEnum::PROVIDER->value) {
                     $fields = array_merge($fields, [
                         'provider_name' => ['required', 'string'],
                         'provider_address' => ['required', 'string'],
@@ -102,12 +102,24 @@ class AuthController extends Controller
                 $user->provider()->create($request->only('provider_name', 'provider_address'));
             }
 
+            //get roles according to given ids
+            $roles = Roles::whereIn('role_name', $request->roles)->select('role_id')->get();
+
+
             //create roles
-            $user->roles()->attach($request->roles);
+            $user->roles()->attach($roles);
 
 
-            //send verification email
-            event(new Registered($user));
+            //generate verification url
+            $verificationUrl = URL::temporarySignedRoute(
+                'verification.verify',
+                Carbon::now()->addMinutes(60),
+                [
+                    'id' => $user->getKey(),
+                    'hash' => sha1($user->getEmailForVerification()),
+                ]
+            );
+
 
             Log::channel('daily')->info('Email-verification sent', ['user' => $user->user_id]);
 
@@ -116,7 +128,8 @@ class AuthController extends Controller
             Log::channel('daily')->info('User created', ['user' => $user->user_id]);
 
             return response()->json([
-                'message' => __('message.registered', ['item' => __('User')])
+                'message' => __('message.registered', ['item' => __('User')]),
+                'verification_url' => $verificationUrl
             ], 201);
         } catch (\Exception $e) {
 
