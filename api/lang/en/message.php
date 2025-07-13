@@ -8,6 +8,7 @@ return [
 
     'email_verify_failed' => 'Email verification failed. Please, try again.',
     'email_verified' => 'Email verified successfully!',
+    'email_verification_sent' => 'Verification email sent! Please check your inbox.',
     'email_verification_resent' => 'Verification link resent!',
     'email_verification_send_failed' => 'Failed to resend verification email!',
 
