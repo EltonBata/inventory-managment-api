@@ -22,7 +22,6 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-
         $request->validate([
             'email' => ['required', 'email:filter'],
             'password' => ['required', Password::defaults()]
@@ -54,6 +53,7 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
+
         try {
 
             DB::beginTransaction();
@@ -110,16 +110,8 @@ class AuthController extends Controller
             $user->roles()->attach($roles);
 
 
-            //generate verification url
-            $verificationUrl = URL::temporarySignedRoute(
-                'verification.verify',
-                Carbon::now()->addMinutes(60),
-                [
-                    'id' => $user->getKey(),
-                    'hash' => sha1($user->getEmailForVerification()),
-                ]
-            );
-
+            //send verification email
+            event(new Registered($user));
 
             Log::channel('daily')->info('Email-verification sent', ['user' => $user->user_id]);
 
@@ -128,8 +120,8 @@ class AuthController extends Controller
             Log::channel('daily')->info('User created', ['user' => $user->user_id]);
 
             return response()->json([
-                'message' => __('message.registered', ['item' => __('User')]),
-                'verification_url' => $verificationUrl
+                'message' => __('message.registered', ['item' => __('User')]) . '. ' . __('message.email_verification_sent'),
+                'user' => $user,
             ], 201);
         } catch (\Exception $e) {
 

@@ -7,6 +7,8 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\URL;
+use Str;
 
 class CustomVerifyEmail extends VerifyEmail
 {
@@ -32,5 +34,22 @@ class CustomVerifyEmail extends VerifyEmail
                 'url' => $this->verificationUrl($notifiable),
                 'username' => $notifiable->username
             ]);
+    }
+
+    protected function verificationUrl($notifiable)
+    {
+        $temporarySignedUrl = URL::temporarySignedRoute(
+            'verification.verify',
+            now()->addMinutes(60),
+            [
+                'id' => $notifiable->getKey(),
+                'hash' => sha1($notifiable->getEmailForVerification()),
+            ]
+        );
+
+
+        $temporarySignedUrl = request()->header("Origin") ? str_replace(Str::beforeLast(url()->current(), '/'), request()->header("Origin"), $temporarySignedUrl) : $temporarySignedUrl;
+
+        return $temporarySignedUrl;
     }
 }
