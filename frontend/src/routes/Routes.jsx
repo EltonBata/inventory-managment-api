@@ -8,12 +8,14 @@ import { useAuth } from "../contexts/AuthContext.jsx";
 import Layout from "../pages/layouts/Layout.jsx";
 import CustomerDashboard from "../pages/customers/CustomerDashboard.jsx";
 import Logout from "../pages/auth/Logout.jsx";
+import Loader from "../pages/components/Loader.jsx";
+import ProviderDashboard from "../pages/providers/ProviderDashboard.jsx";
 
 function PrivateRoutes({ children }) {
   const { isAuthenticated, authChecked } = useAuth();
 
   if (!authChecked) {
-    return "Loading";
+    return <Loader loading={true} />;
   }
 
   if (!isAuthenticated) {
@@ -27,8 +29,9 @@ function PublicRoutes({ children }) {
   const { isAuthenticated, authChecked, user } = useAuth();
 
   if (!authChecked) {
-    return "Loading";
+    return <Loader loading={true} />;
   }
+
   if (isAuthenticated) {
     const roleNames = user.roles.map((r) => r.role_name);
 
@@ -82,6 +85,28 @@ function RoutesList() {
       >
         <Route path="dashboard" element={<CustomerDashboard />} />
       </Route>
+
+      {/* providers routes */}
+      <Route
+        path="providers"
+        element={
+          <PrivateRoutes>
+            <Layout />
+          </PrivateRoutes>
+        }
+      >
+        <Route path="dashboard" element={<ProviderDashboard />} />
+      </Route>
+
+      {/* verify email */}
+      <Route
+        path="auth/verify/:id/:hash"
+        element={
+          <PrivateRoutes>
+            <Layout />
+          </PrivateRoutes>
+        }
+      />
 
       <Route path="/" element={<ErrorsLayout />}>
         <Route path="*" element={<NotFoundPage />} />

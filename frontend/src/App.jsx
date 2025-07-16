@@ -4,7 +4,7 @@ import RoutesList from "./routes/Routes";
 const App = () => {
   return (
     <AuthProvider>
-      <RoutesList />;
+      <RoutesList />
     </AuthProvider>
   );
 };
