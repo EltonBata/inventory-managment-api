@@ -6,12 +6,13 @@ import {
   FaKey,
   FaUser,
 } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Card from "./components/Card.jsx";
 import useForm from "../../hooks/useForm.js";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { register } from "../../services/auth.js";
+import { useAuth } from "../../contexts/AuthContext.jsx";
 
 function RegisterPage() {
   const [isBtnDisabled, disableBtn] = useState(false);
@@ -28,11 +29,15 @@ function RegisterPage() {
     provider_address: "",
   });
 
+  const { setToken, token, setUser } = useAuth();
+
   let btn_classes = "";
 
   if (isBtnDisabled) {
     btn_classes = "skeleton btn-disabled";
   }
+
+  const navigate = useNavigate();
 
   //if roles change
   useEffect(() => {
@@ -59,7 +64,6 @@ function RegisterPage() {
     });
   }, [JSON.stringify(values.roles)]);
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -70,6 +74,13 @@ function RegisterPage() {
     try {
       const res = await register(values);
 
+      setToken({
+        token: res.token,
+        token_expires_at: res.token_expires_at,
+      });
+
+      setUser(res.user);
+
       toast.update(toastId, {
         render: res.message,
         type: "success",
@@ -77,6 +88,17 @@ function RegisterPage() {
         autoClose: 5000,
         hideProgressBar: false,
       });
+
+      const roleNames = res.user.roles.map((r) => r.role_name);
+
+      if (roleNames.includes("customer")) {
+        console.log("Navigating to customer dashboard"); 
+        navigate("/customers/dashboard");
+      }
+
+      if (roleNames.includes("provider")) {
+        navigate("/providers/dashboard");
+      }
     } catch (error) {
       toast.update(toastId, {
         render: error.message,
@@ -102,7 +124,7 @@ function RegisterPage() {
       disableBtn(false);
     }
   };
-console.log(errors)
+
   return (
     <Card wd="w-full md:w-4/5 lg:w-3/5">
       <form onSubmit={handleSubmit} className="pb-5">

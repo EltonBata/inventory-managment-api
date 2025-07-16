@@ -4,23 +4,40 @@ import LoginPage from "../pages/auth/LoginPage.jsx";
 import RegisterPage from "../pages/auth/RegisterPage.jsx";
 import ErrorsLayout from "../pages/errors/ErrorsLayout.jsx";
 import NotFoundPage from "../pages/errors/NotFoundPage.jsx";
-import { useToken } from "../contexts/AuthContext.jsx";
+import { useAuth } from "../contexts/AuthContext.jsx";
+import Layout from "../pages/layouts/Layout.jsx";
+import CustomerDashboard from "../pages/customers/CustomerDashboard.jsx";
 
-function IsAuthenticated({ children }) {
-  const { isAuthenticated } = useToken();
+function PrivateRoutes({ children }) {
+  const { isAuthenticated, authChecked } = useAuth();
+
+  if (!authChecked) {
+    return "Loading";
+  }
 
   if (!isAuthenticated) {
-    return <Navigate to="/" />;
+    return <Navigate to="/" replace />;
   }
 
   return children;
 }
 
-function IsNotAuthenticated({ children }) {
-  const { isAuthenticated } = useToken();
+function PublicRoutes({ children }) {
+  const { isAuthenticated, authChecked, user } = useAuth();
 
+  if (!authChecked) {
+    return "Loading";
+  }
   if (isAuthenticated) {
-    return <Navigate to="/home" />;
+    const roleNames = user.roles.map((r) => r.role_name);
+
+    if (roleNames.includes("customer")) {
+      return <Navigate to="/customers/dashboard" />;
+    }
+
+    if (roleNames.includes("provider")) {
+      return <Navigate to="/providers/dashboard" />;
+    }
   }
 
   return children;
@@ -29,32 +46,30 @@ function IsNotAuthenticated({ children }) {
 function RoutesList() {
   return (
     <Routes>
+      {/* auth routes */}
       <Route
         path="/"
         element={
-          <IsNotAuthenticated>
+          <PublicRoutes>
             <AuthLayout />
-          </IsNotAuthenticated>
+          </PublicRoutes>
         }
       >
         <Route index element={<LoginPage />} />
+        <Route path="/login" element={<Navigate to="/" replace />} />
+        <Route path="/register" element={<RegisterPage />} />
+      </Route>
 
-        <Route
-          path="/login"
-          element={
-            <IsNotAuthenticated>
-              <Navigate to="/" />
-            </IsNotAuthenticated>
-          }
-        />
-        <Route
-          path="/register"
-          element={
-            <IsNotAuthenticated>
-              <RegisterPage />
-            </IsNotAuthenticated>
-          }
-        />
+      {/* customers routes */}
+      <Route
+        path="customers"
+        element={
+          <PrivateRoutes>
+            <Layout />
+          </PrivateRoutes>
+        }
+      >
+        <Route path="dashboard" element={<CustomerDashboard />} />
       </Route>
 
       <Route path="/" element={<ErrorsLayout />}>

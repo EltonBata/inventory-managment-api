@@ -1,11 +1,11 @@
 import { useState } from "react";
 import useForm from "../../hooks/useForm.js";
 import { FaEnvelope, FaKey } from "react-icons/fa";
-import { Link, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Card from "./components/Card.jsx";
 import { authenticate } from "../../services/auth.js";
 import { toast } from "react-toastify";
-import { useToken } from "../../contexts/AuthContext.jsx";
+import { useAuth } from "../../contexts/AuthContext.jsx";
 
 function LoginPage() {
   const [isBtnDisabled, disableBtn] = useState(false);
@@ -15,11 +15,13 @@ function LoginPage() {
     password: "",
   });
 
-  const { setToken, setUser, user } = useToken();
+  const { setToken, setUser } = useAuth();
 
   let btn_classes = "";
 
   if (isBtnDisabled) btn_classes = "skeleton btn-disabled";
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,13 +35,12 @@ function LoginPage() {
     try {
       const res = await authenticate(credentials);
 
-      setToken((prev) => ({
-        ...prev,
+      setToken({
         token: res.token,
         token_expires_at: res.token_expires_at,
-      }));
+      });
 
-      setUser(JSON.parse(res.user));
+      setUser(res.user);
 
       toast.update(toastId, {
         render: res.message,
@@ -49,7 +50,16 @@ function LoginPage() {
         hideProgressBar: false,
       });
 
-      return <Navigate to="/home" />;
+      const roleNames = res.user.roles.map((r) => r.role_name);
+
+      if (roleNames.includes("customer")) {
+        console.log("Navigating to customer dashboard"); 
+        navigate("/customers/dashboard");
+      }
+
+      if (roleNames.includes("provider")) {
+        navigate("/providers/dashboard");
+      }
     } catch (error) {
       toast.update(toastId, {
         render: error?.message,

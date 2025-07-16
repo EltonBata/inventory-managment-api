@@ -1,21 +1,31 @@
 import { useContext, useEffect } from "react";
 import { useState } from "react";
 import { createContext } from "react";
+import Cookies from "js-cookie";
 
 const AuthContext = createContext({});
 
 export default function AuthProvider({ children }) {
   const [token, setToken] = useState({
-    token: localStorage.getItem("token"),
-    token_expires_at: localStorage.getItem("token_expires_at"),
+    token: Cookies.get("token"),
+    token_expires_at: Cookies.get("token_expires_at"),
   });
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    const userCookie = Cookies.get("user");
+    return userCookie ? JSON.parse(userCookie) : null;
+  });
 
-  const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
-    if (token.token == "null" || token.token_expires_at == "null") {
+    if (
+      !token.token ||
+      token.token === undefined ||
+      !token.token_expires_at ||
+      token.token_expires_at === undefined
+    ) {
       setIsAuthenticated(false);
     } else {
       const now = new Date();
@@ -24,25 +34,35 @@ export default function AuthProvider({ children }) {
       const is_expired = now > expiration_token;
 
       if (is_expired) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("token_expires_at");
-        localStorage.removeItem("user");
+        Cookies.remove("token");
+        Cookies.remove("token_expires_at");
+        Cookies.remove("user");
         setIsAuthenticated(false);
       } else {
         setIsAuthenticated(true);
       }
     }
+
+    setAuthChecked(true);
   }, []);
 
   useEffect(() => {
-    if (token.token != "null" && token.token_expires_at != "null") {
-      localStorage.setItem("token", token.token);
-      localStorage.setItem("token_expires_at", token.token_expires_at);
-      localStorage.setItem("user", user);
+    if (
+      token.token &&
+      token.token !== undefined &&
+      token.token_expires_at &&
+      token.token_expires_at != undefined
+    ) {
+      const expiration = new Date(token.token_expires_at);
+
+      Cookies.set("token", token.token, { expires: expiration });
+      Cookies.set("token_expires_at", token.token_expires_at);
+      Cookies.set("user", JSON.stringify(user));
+      setIsAuthenticated(true);
     } else {
-      localStorage.removeItem("token");
-      localStorage.removeItem("token_expires_at");
-      localStorage.removeItem("user");
+      Cookies.remove("token");
+      Cookies.remove("token_expires_at");
+      Cookies.remove("user");
       setIsAuthenticated(false);
     }
   }, [token.token, token.token_expires_at]);
@@ -53,6 +73,8 @@ export default function AuthProvider({ children }) {
         token: token.token,
         setToken,
         isAuthenticated,
+        setIsAuthenticated,
+        authChecked,
         user,
         setUser,
       }}
@@ -62,6 +84,6 @@ export default function AuthProvider({ children }) {
   );
 }
 
-export function useToken() {
+export function useAuth() {
   return useContext(AuthContext);
 }
