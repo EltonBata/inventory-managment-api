@@ -7,6 +7,7 @@ import NotFoundPage from "../pages/errors/NotFoundPage.jsx";
 import { useAuth } from "../contexts/AuthContext.jsx";
 import Layout from "../pages/layouts/Layout.jsx";
 import CustomerDashboard from "../pages/customers/CustomerDashboard.jsx";
+import Logout from "../pages/auth/Logout.jsx";
 
 function PrivateRoutes({ children }) {
   const { isAuthenticated, authChecked } = useAuth();
@@ -59,6 +60,16 @@ function RoutesList() {
         <Route path="/login" element={<Navigate to="/" replace />} />
         <Route path="/register" element={<RegisterPage />} />
       </Route>
+
+      {/* logout */}
+      <Route
+        path="logout"
+        element={
+          <PrivateRoutes>
+            <Logout />
+          </PrivateRoutes>
+        }
+      />
 
       {/* customers routes */}
       <Route

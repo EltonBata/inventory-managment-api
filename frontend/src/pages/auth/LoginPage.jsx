@@ -15,7 +15,7 @@ function LoginPage() {
     password: "",
   });
 
-  const { setToken, setUser } = useAuth();
+  const { login } = useAuth();
 
   let btn_classes = "";
 
@@ -35,12 +35,10 @@ function LoginPage() {
     try {
       const res = await authenticate(credentials);
 
-      setToken({
+      login(res.user, {
         token: res.token,
         token_expires_at: res.token_expires_at,
       });
-
-      setUser(res.user);
 
       toast.update(toastId, {
         render: res.message,
@@ -53,7 +51,6 @@ function LoginPage() {
       const roleNames = res.user.roles.map((r) => r.role_name);
 
       if (roleNames.includes("customer")) {
-        console.log("Navigating to customer dashboard"); 
         navigate("/customers/dashboard");
       }
 
