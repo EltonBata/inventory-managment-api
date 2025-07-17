@@ -40,7 +40,8 @@ class AuthController extends Controller
                 'message' => __('auth.authenticated'),
                 'token' => $token->plainTextToken,
                 'token_expires_at' => $token->accessToken->expires_at,
-                'user' => $user->load('roles:role_id,role_name')->toJson()
+                'user' => $user->load('roles:role_id,role_name'),
+                'user_verified' => $user->hasVerifiedEmail()
             ]);
         }
 
@@ -115,13 +116,19 @@ class AuthController extends Controller
 
             Log::channel('daily')->info('Email-verification sent', ['user' => $user->user_id]);
 
+            //generate token
+            $token = $user->createToken("{$user->username}-token", ['*'], now()->addMinutes(30));
+
             DB::commit();
 
             Log::channel('daily')->info('User created', ['user' => $user->user_id]);
 
             return response()->json([
                 'message' => __('message.registered', ['item' => __('User')]) . '. ' . __('message.email_verification_sent'),
-                'user' => $user,
+                'user' => $user->load('roles'),
+                'user_verified' => false,
+                'token' => $token->plainTextToken,
+                'token_expires_at' => $token->accessToken->expires_at,
             ], 201);
         } catch (\Exception $e) {
 

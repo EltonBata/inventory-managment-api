@@ -93,7 +93,6 @@ function RegisterPage() {
       const roleNames = res.user.roles.map((r) => r.role_name);
 
       if (roleNames.includes("customer")) {
-        console.log("Navigating to customer dashboard");
         navigate("/customers/dashboard");
       }
 

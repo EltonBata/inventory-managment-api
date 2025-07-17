@@ -47,8 +47,10 @@ class CustomVerifyEmail extends VerifyEmail
             ]
         );
 
-
-        $temporarySignedUrl = request()->header("Origin") ? str_replace(Str::beforeLast(url()->current(), '/'), request()->header("Origin"), $temporarySignedUrl) : $temporarySignedUrl;
+        if ($origin = request()->header('Origin')) {
+            $parsed = parse_url($temporarySignedUrl);
+            $temporarySignedUrl = $origin . str_replace('/api', '', $parsed['path']) . '?' . $parsed['query'];
+        }
 
         return $temporarySignedUrl;
     }

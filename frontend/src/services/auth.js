@@ -54,7 +54,6 @@ export const register = async (body_data) => {
 };
 
 export const verifyEmail = async ({ id, hash, token }) => {
-
   try {
     const res = await fetch(
       `http://127.0.0.1:8000/api/auth/verify/${id}/${hash}`,
@@ -70,6 +69,37 @@ export const verifyEmail = async ({ id, hash, token }) => {
     );
 
     const data = await res.json();
+
+    if (!res.ok) {
+      throw data;
+    }
+
+    return data;
+  } catch (error) {
+    if (error instanceof TypeError) {
+      throw new Error("Request error!");
+    }
+
+    throw error;
+  }
+};
+
+export const resendEmailVerification = async ({ token }) => {
+  try {
+    const res = await fetch(
+      "http://127.0.0.1:8000/api/auth/resend-verification-email",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
+          "Accept-Language": "pt"
+        },
+      }
+    );
+
+    const data = res.json();
 
     if (!res.ok) {
       throw data;
