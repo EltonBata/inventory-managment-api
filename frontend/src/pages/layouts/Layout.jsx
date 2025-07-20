@@ -13,6 +13,7 @@ import VerificationMessage from "../components/VerificationMessage";
 import { useAuth } from "../../contexts/AuthContext";
 import { toast } from "react-toastify";
 import { verifyEmail } from "../../services/auth";
+import Sidebar from "../components/Sidebar";
 
 function Layout() {
   const { user, setUser, token } = useAuth();
@@ -52,6 +53,7 @@ function Layout() {
             isLoading: false,
             autoClose: 3000,
             hideProgressBar: false,
+            closeButton: true,
           });
         } catch (error) {
           toast.update(toastId, {
@@ -60,6 +62,7 @@ function Layout() {
             isLoading: false,
             autoClose: 3000,
             hideProgressBar: false,
+            closeButton: true,
           });
         } finally {
           navigate("/");
@@ -79,8 +82,14 @@ function Layout() {
           <Header />
         </div>
 
-        <div className="p-4 h-auto">
-          <Outlet />
+        <div className="relative grid grid-cols-5 h-full">
+          <div className="hidden sm:block col-span-1">
+            <Sidebar />
+          </div>
+
+          <div className="col-span-5 sm:col-span-4 p-2 overflow-y-auto">
+            <Outlet />
+          </div>
         </div>
         <Footer />
       </div>

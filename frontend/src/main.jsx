@@ -16,6 +16,7 @@ createRoot(document.getElementById("root")).render(
       closeOnClick={false}
       rtl={false}
       theme="light"
+      closeButton={true}
     />
 
     <BrowserRouter>

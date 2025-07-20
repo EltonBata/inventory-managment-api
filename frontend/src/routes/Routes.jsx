@@ -50,66 +50,42 @@ function PublicRoutes({ children }) {
 function RoutesList() {
   return (
     <Routes>
-      {/* auth routes */}
+      {/* Public Routes */}
       <Route
-        path="/"
         element={
           <PublicRoutes>
             <AuthLayout />
           </PublicRoutes>
         }
       >
-        <Route index element={<LoginPage />} />
+        <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<Navigate to="/" replace />} />
         <Route path="/register" element={<RegisterPage />} />
       </Route>
 
-      {/* logout */}
+      {/* Private Routes */}
       <Route
-        path="logout"
-        element={
-          <PrivateRoutes>
-            <Logout />
-          </PrivateRoutes>
-        }
-      />
-
-      {/* customers routes */}
-      <Route
-        path="customers"
         element={
           <PrivateRoutes>
             <Layout />
           </PrivateRoutes>
         }
       >
-        <Route path="dashboard" element={<CustomerDashboard />} />
-      </Route>
+        <Route path="logout" element={<Logout />} />
 
-      {/* providers routes */}
-      <Route
-        path="providers"
-        element={
-          <PrivateRoutes>
-            <Layout />
-          </PrivateRoutes>
-        }
-      >
-        <Route path="dashboard" element={<ProviderDashboard />} />
-      </Route>
+        {/* Customers */}
+        <Route path="customers/dashboard" element={<CustomerDashboard />} />
 
-      {/* verify email */}
-      <Route
-        path="auth/verify/:id/:hash"
-        element={
-          <PrivateRoutes>
-            <Layout />
-          </PrivateRoutes>
-        }
-      />
+        {/* Providers */}
+        <Route path="providers/dashboard" element={<ProviderDashboard />} />
 
-      <Route path="/" element={<ErrorsLayout />}>
-        <Route path="*" element={<NotFoundPage />} />
+        {/* Verify email */}
+        <Route path="auth/verify/:id/:hash" element={null} />
+
+        {/* Error Routes */}
+        <Route element={<ErrorsLayout />}>
+          <Route path="*" element={<NotFoundPage />} />
+        </Route>
       </Route>
     </Routes>
   );

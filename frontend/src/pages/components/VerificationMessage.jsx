@@ -17,6 +17,7 @@ export default function VerificationMessage() {
         isLoading: false,
         autoClose: 3000,
         hideProgressBar: false,
+        closeButton: true,
       });
     } catch (error) {
       toast.update(toastId, {
@@ -25,6 +26,7 @@ export default function VerificationMessage() {
         isLoading: false,
         autoClose: 3000,
         hideProgressBar: false,
+        closeButton: true,
       });
     }
   };

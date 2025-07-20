@@ -49,6 +49,7 @@ function LoginPage() {
         isLoading: false,
         autoClose: 3000,
         hideProgressBar: false,
+        closeButton: true,
       });
 
       const roleNames = res.user.roles.map((r) => r.role_name);
@@ -67,6 +68,7 @@ function LoginPage() {
         isLoading: false,
         autoClose: 3000,
         hideProgressBar: false,
+        closeButton: true,
       });
 
       if (error.errors) {
@@ -82,7 +84,7 @@ function LoginPage() {
 
   return (
     <>
-      { isBtnDisabled && <Loader loading={true} /> }
+      {isBtnDisabled && <Loader loading={true} />}
 
       <Card>
         <form onSubmit={handleSubmit} className="pb-5">

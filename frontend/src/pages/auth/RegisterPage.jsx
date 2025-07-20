@@ -88,6 +88,7 @@ function RegisterPage() {
         isLoading: false,
         autoClose: 3000,
         hideProgressBar: false,
+        closeButton: true,
       });
 
       const roleNames = res.user.roles.map((r) => r.role_name);
@@ -106,6 +107,7 @@ function RegisterPage() {
         isLoading: false,
         autoClose: 3000,
         hideProgressBar: false,
+        closeButton: true,
       });
 
       if (error.errors) {
