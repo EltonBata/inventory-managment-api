@@ -4,8 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { logoutRequest } from "../../services/auth";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
-import { useState } from "react";
-
 function Logout() {
   const { logout, token } = useAuth();
 

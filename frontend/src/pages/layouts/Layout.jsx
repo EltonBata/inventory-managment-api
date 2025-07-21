@@ -14,6 +14,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { toast } from "react-toastify";
 import { verifyEmail } from "../../services/auth";
 import Sidebar from "../components/Sidebar";
+import useUpdateToken from "../../hooks/useUpdateToken.js";
 
 function Layout() {
   const { user, setUser, token } = useAuth();
@@ -46,6 +47,7 @@ function Layout() {
           });
 
           setUser((prev) => ({ ...prev, user_verified: true }));
+          useUpdateToken();
 
           toast.update(toastId, {
             render: res.message,

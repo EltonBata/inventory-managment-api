@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 import { useAuth } from "../../contexts/AuthContext.jsx";
 import { resendEmailVerification } from "../../services/auth.js";
+import useUpdateToken from "../../hooks/useUpdateToken.js";
 
 export default function VerificationMessage() {
   const { token } = useAuth();
@@ -10,6 +11,8 @@ export default function VerificationMessage() {
 
     try {
       const res = await resendEmailVerification({ token: token });
+
+      useUpdateToken();
 
       toast.update(toastId, {
         render: res.message,
@@ -41,11 +44,7 @@ export default function VerificationMessage() {
           A verification email has been sent to your address. Please check your
           inbox and follow the instructions to verify your account.
         </p>
-        <button
-          className="btn btn-neutral"
-          type="button"
-          onClick={resendEmail}
-        >
+        <button className="btn btn-neutral" type="button" onClick={resendEmail}>
           Resend Email
         </button>
       </div>

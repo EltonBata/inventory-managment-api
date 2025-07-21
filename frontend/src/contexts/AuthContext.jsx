@@ -78,6 +78,7 @@ export default function AuthProvider({ children }) {
     <AuthContext.Provider
       value={{
         token: token.token,
+        token_expiration: token.token_expires_at,
         setToken,
         isAuthenticated,
         setIsAuthenticated,
