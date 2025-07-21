@@ -199,11 +199,10 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
 
-        $request->user()->currentAccessToken()->delete();
+        $request->user()->tokens()->delete();
 
         Log::channel('daily')->info('User logged out', ['user' => $request->user()->user_id]);
 
-        $request->user()->currentAccessToken()->delete();
 
         return response()->json([
             'message' => __('message.loggedout')
