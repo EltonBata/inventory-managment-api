@@ -1,10 +1,9 @@
 import { toast } from "react-toastify";
 import { useAuth } from "../../contexts/AuthContext.jsx";
-import { resendEmailVerification } from "../../services/auth.js";
-import useUpdateToken from "../../hooks/useUpdateToken.js";
+import { refreshToken, resendEmailVerification } from "../../services/auth.js";
 
 export default function VerificationMessage() {
-  const { token } = useAuth();
+  const { token, token_expiration, setToken } = useAuth();
 
   const resendEmail = async () => {
     const toastId = toast.loading("Please wait...");
@@ -12,7 +11,7 @@ export default function VerificationMessage() {
     try {
       const res = await resendEmailVerification({ token: token });
 
-      useUpdateToken();
+      refreshToken(token_expiration, setToken);
 
       toast.update(toastId, {
         render: res.message,
@@ -25,7 +24,7 @@ export default function VerificationMessage() {
     } catch (error) {
       toast.update(toastId, {
         render: error?.message,
-        type: "success",
+        type: "error",
         isLoading: false,
         autoClose: 3000,
         hideProgressBar: false,

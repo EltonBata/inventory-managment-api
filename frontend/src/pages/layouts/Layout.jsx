@@ -12,12 +12,11 @@ import { useEffect } from "react";
 import VerificationMessage from "../components/VerificationMessage";
 import { useAuth } from "../../contexts/AuthContext";
 import { toast } from "react-toastify";
-import { verifyEmail } from "../../services/auth";
+import { refreshToken, verifyEmail } from "../../services/auth";
 import Sidebar from "../components/Sidebar";
-import useUpdateToken from "../../hooks/useUpdateToken.js";
 
 function Layout() {
-  const { user, setUser, token } = useAuth();
+  const { user, setUser, token, token_expiration, setToken } = useAuth();
 
   const [loaded, setLoaded] = useState(false);
 
@@ -47,7 +46,8 @@ function Layout() {
           });
 
           setUser((prev) => ({ ...prev, user_verified: true }));
-          useUpdateToken();
+
+          refreshToken(token_expiration, setToken);
 
           toast.update(toastId, {
             render: res.message,
@@ -67,7 +67,7 @@ function Layout() {
             closeButton: true,
           });
         } finally {
-          navigate("/");
+          navigate("/", { replace: true });
         }
       }
     };
@@ -84,12 +84,12 @@ function Layout() {
           <Header />
         </div>
 
-        <div className="relative grid grid-cols-5 h-full">
-          <div className="hidden sm:block col-span-1">
+        <div className="grid grid-cols-6 h-full">
+          <div className="hidden sm:block col-span-1 relative">
             <Sidebar />
           </div>
 
-          <div className="col-span-5 sm:col-span-4 p-2 overflow-y-auto">
+          <div className="col-span-full sm:col-span-5 p-4 overflow-y-auto">
             <Outlet />
           </div>
         </div>

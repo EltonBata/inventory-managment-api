@@ -39,7 +39,7 @@ function Logout() {
         closeButton: true,
       });
     } finally {
-      navigate("/");
+      navigate("/", { replace: true });
     }
   }, []);
 

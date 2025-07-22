@@ -141,3 +141,13 @@ export const logoutRequest = async ({ token }) => {
     throw error;
   }
 };
+
+export const refreshToken = (token_expiration, setToken) => {
+  const expiration = new Date(token_expiration);
+  const newExpiration = new Date(expiration.getTime() + 30 * 60000); // +30min
+
+  setToken((prev) => ({
+    ...prev,
+    token_expires_at: newExpiration.toISOString(),
+  }));
+};

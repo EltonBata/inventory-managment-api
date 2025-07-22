@@ -94,11 +94,11 @@ function RegisterPage() {
       const roleNames = res.user.roles.map((r) => r.role_name);
 
       if (roleNames.includes("customer")) {
-        navigate("/customers/dashboard");
+        navigate("/customers/dashboard", { replace: true });
       }
 
       if (roleNames.includes("provider")) {
-        navigate("/providers/dashboard");
+        navigate("/providers/dashboard", { replace: true });
       }
     } catch (error) {
       toast.update(toastId, {
